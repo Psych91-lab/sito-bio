@@ -1,0 +1,21 @@
+backend:
+  name: git-gateway
+  repo: Psych91-lab/sito-bio
+  branch: main
+
+# Dove verranno salvate le immagini che carichi tramite il CMS
+media_folder: "images/uploads"
+public_folder: "/images/uploads"
+
+collections:
+  - name: "bacheca"
+    label: "I miei Annunci"
+    folder: "content/bacheca" # Qui verranno creati i file degli annunci
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    fields:
+      - {label: "Titolo Annuncio", name: "title", widget: "string"}
+      - {label: "Data", name: "date", widget: "datetime"}
+      - {label: "Immagine Post", name: "image", widget: "image", required: false}
+      - {label: "Testo dell'annuncio", name: "body", widget: "markdown"}
+      - {label: "Tag Instagram", name: "ig_tag", widget: "string", default: "#annuncio"}
