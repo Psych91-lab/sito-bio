@@ -31,6 +31,21 @@
     <section>
         <h3>Contattami</h3>
         <form name="contatti" method="POST" data-netlify="true" action="/form_inviato.html">
+            <input type="text" name="nome" placeholder="Il tuo nome" required>
+    
+        <input type="email" name="email" placeholder="La tua email" required>
+    
+        <select name="motivo">
+            <option value="lavoro">Opportunità di lavoro</option>
+            <option value="viaggi">Info Viaggi/Moto</option>
+            <option value="altro">Altro</option>
+        </select>
+
+        <textarea name="messaggio" rows="4" placeholder="Scrivi qui..." required></textarea>
+    
+        <button type="submit">Invia Messaggio</button>
+    </form>
+
             <input type="email" name="email" placeholder="La tua email" required>
             <textarea name="messaggio" rows="4" placeholder="Il tuo messaggio" required></textarea>
             <button type="submit">Invia Richiesta</button>
