@@ -4,6 +4,11 @@
       "title": "Annuncio test",
       "body": "ciao questo è il mio nuovo fantastico sito!\n",
       "date": "2026-02-24T18:35:00.000+01:00"
+    },
+    {
+      "title": "test 2",
+      "body": "test 2",
+      "date": "2026-02-24T18:36:00.000+01:00"
     }
   ]
 }
