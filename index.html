@@ -1,26 +1,104 @@
-// Configurazione Sanity
-const PROJECT_ID = 'o0afaobs';
-const DATASET = 'production';
-// Questa query chiede a Sanity tutti i documenti di tipo "annuncio" ordinati per data
-const QUERY = encodeURIComponent('*[_type == "annuncio"] | order(data desc)');
-const URL = `https://${PROJECT_ID}.api.sanity.io/v2021-10-21/data/query/${DATASET}?query=${QUERY}`;
-
-async function caricaBacheca() {
-    try {
-        const response = await fetch(URL);
-        const { result } = await response.json();
-        const container = document.getElementById('bacheca-container'); // Assicurati di avere questo ID nel tuo HTML
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dott.ssa Stefania - Psicologa</title>
+    <style>
+        :root { --primary: #2c3e50; --accent: #3498db; --bg: #f9f9f9; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; margin: 0; background: var(--bg); }
+        header { background: var(--primary); color: white; padding: 2rem; text-align: center; }
+        container { max-width: 800px; margin: 2rem auto; padding: 0 1rem; display: block; }
         
-        container.innerHTML = result.map(post => `
-            <div class="annuncio">
-                <h4>${post.titolo}</h4>
-                <small>${new Date(post.data).toLocaleDateString('it-IT')}</small>
-                <p>${post.testo}</p>
-            </div>
-        `).join('');
-    } catch (error) {
-        console.error("Errore caricamento Sanity:", error);
-    }
-}
+        /* Sezione Bacheca */
+        .annuncio { background: white; padding: 1.5rem; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); margin-bottom: 1.5rem; border-left: 5px solid var(--accent); }
+        .annuncio h4 { margin-top: 0; color: var(--primary); }
+        .annuncio small { color: #888; display: block; margin-bottom: 0.5rem; }
 
-caricaBacheca();
+        /* Form di Contatto */
+        form { background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        input, textarea, select, button { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; }
+        button { background: var(--accent); color: white; border: none; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        button:hover { background: #2980b9; }
+
+        .loading { text-align: center; color: #666; font-style: italic; }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Dott.ssa Stefania</h1>
+    <p>Psicologa e Psicoterapeuta</p>
+</header>
+
+<container>
+    <section id="bio">
+        <h2>Chi sono</h2>
+        <p>Benvenuti nel mio spazio professionale. Ricevo su appuntamento e mi occupo di...</p>
+    </section>
+
+    <hr>
+
+    <section id="bacheca">
+        <h2>Ultime Novità</h2>
+        <div id="bacheca-container">
+            <p class="loading">Caricamento annunci...</p>
+        </div>
+    </section>
+
+    <hr>
+
+    <section id="contatti">
+        <h2>Contattami</h2>
+        <form action="https://formspree.io/f/TUO_ID_FORMSPREE" method="POST">
+            <input type="text" name="nome" placeholder="Il tuo nome" required>
+            <input type="email" name="email" placeholder="La tua email" required>
+            <select name="motivo">
+                <option value="appuntamento">Richiesta appuntamento</option>
+                <option value="info">Informazioni generali</option>
+                <option value="altro">Altro</option>
+            </select>
+            <textarea name="messaggio" rows="5" placeholder="Come posso aiutarti?" required></textarea>
+            <button type="submit">Invia Messaggio</button>
+        </form>
+    </section>
+</container>
+
+<script>
+    // Configurazione Sanity
+    const PROJECT_ID = 'o0afaobs';
+    const DATASET = 'production';
+    const QUERY = encodeURIComponent('*[_type == "annuncio"] | order(data desc)');
+    const API_URL = `https://${PROJECT_ID}.api.sanity.io/v2021-10-21/data/query/${DATASET}?query=${QUERY}`;
+
+    async function caricaBacheca() {
+        const container = document.getElementById('bacheca-container');
+        try {
+            const response = await fetch(API_URL);
+            const { result } = await response.json();
+            
+            if (!result || result.length === 0) {
+                container.innerHTML = '<p>Nessun annuncio presente al momento.</p>';
+                return;
+            }
+
+            container.innerHTML = result.map(post => `
+                <article class="annuncio">
+                    <h4>${post.titolo || 'Senza titolo'}</h4>
+                    <small>${post.data ? new Date(post.data).toLocaleDateString('it-IT') : ''}</small>
+                    <p>${post.testo || ''}</p>
+                </article>
+            `).join('');
+
+        } catch (error) {
+            console.error("Errore Sanity:", error);
+            container.innerHTML = '<p>Errore nel caricamento degli annunci. Riprova più tardi.</p>';
+        }
+    }
+
+    // Avvio al caricamento della pagina
+    window.onload = caricaBacheca;
+</script>
+
+</body>
+</html>
