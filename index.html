@@ -4,7 +4,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dott.ssa Stefania Barbagallo - Psicologa</title>
-    <link rel="stylesheet" href="style.css">
+    <style>
+        /* CSS INTEGRATO - COSI' IL SITO TORNA A VEDERSI BENE */
+        :root { --primary: #2c3e50; --secondary: #27ae60; --light: #f4f7f6; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; margin: 0; background: var(--light); color: #333; }
+        header { background: var(--primary); color: white; padding: 60px 20px; text-align: center; }
+        header h1 { margin: 0; font-size: 2.5rem; }
+        main { max-width: 800px; margin: 20px auto; padding: 20px; }
+        section { background: white; padding: 30px; margin-bottom: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        h2 { color: var(--primary); border-bottom: 2px solid var(--secondary); padding-bottom: 10px; }
+        
+        /* Stile Form */
+        input, textarea, select { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; font-size: 1rem; }
+        button { background: var(--secondary); color: white; padding: 15px; border: none; border-radius: 6px; cursor: pointer; width: 100%; font-size: 1.1rem; font-weight: bold; transition: background 0.3s; }
+        button:hover { background: #219150; }
+
+        /* Stile Bacheca */
+        .annuncio { border-left: 5px solid var(--secondary); padding: 15px; margin-bottom: 25px; background: #fafafa; border-radius: 0 8px 8px 0; }
+        .annuncio h3 { margin-top: 0; color: var(--primary); }
+        .annuncio small { color: #666; font-style: italic; }
+        
+        footer { text-align: center; padding: 40px; color: #777; font-size: 0.9rem; }
+    </style>
 </head>
 <body>
 
@@ -17,11 +38,9 @@
         <section id="bacheca">
             <h2>Bacheca Annunci</h2>
             <div id="annunci-container">
-                <p>Caricamento annunci...</p>
+                <p>Caricamento annunci in corso...</p>
             </div>
         </section>
-
-        <hr>
 
         <section id="contatti">
             <h2>Contattami</h2>
@@ -34,10 +53,9 @@
                 <select name="subject">
                     <option value="Richiesta Appuntamento">Richiesta appuntamento</option>
                     <option value="Informazioni">Informazioni generali</option>
-                    <option value="Altro">Altro</option>
                 </select>
                 
-                <textarea name="message" rows="5" placeholder="Come posso aiutarti?" required></textarea>
+                <textarea name="message" rows="5" placeholder="In cosa posso aiutarti?" required></textarea>
 
                 <input type="hidden" name="redirect" value="https://sito-bio.barbagallopsicologa.workers.dev/?invio=ok">
 
@@ -47,7 +65,7 @@
     </main>
 
     <footer>
-        <p>&copy; 2026 Dott.ssa Stefania Barbagallo</p>
+        <p>&copy; 2026 Dott.ssa Stefania Barbagallo - Catania</p>
     </footer>
 
     <script>
@@ -62,24 +80,27 @@
                 const { result } = await response.json();
                 const container = document.getElementById('annunci-container');
 
-                if (result.length > 0) {
+                if (result && result.length > 0) {
                     container.innerHTML = result.map(post => `
                         <div class="annuncio">
-                            <h3>${post.titolo}</h3>
-                            <small>${new Date(post.data).toLocaleDateString('it-IT')}</small>
-                            <p>${post.testo}</p>
+                            <h3>${post.titolo || 'Senza Titolo'}</h3>
+                            <small>${post.data ? new Date(post.data).toLocaleDateString('it-IT') : ''}</small>
+                            <p>${post.testo || ''}</p>
                         </div>
                     `).join('');
                 } else {
                     container.innerHTML = "<p>Nessun annuncio presente al momento.</p>";
                 }
             } catch (error) {
-                console.error("Errore Sanity:", error);
-                document.getElementById('annunci-container').innerHTML = "<p>Errore nel caricamento della bacheca.</p>";
+                container.innerHTML = "<p>Bacheca temporaneamente non disponibile.</p>";
             }
         }
-
         fetchAnnunci();
+
+        // Messaggio di conferma invio form
+        if (window.location.search.includes('invio=ok')) {
+            alert('Messaggio inviato con successo! Ti risponderò al più presto.');
+        }
     </script>
 </body>
 </html>
