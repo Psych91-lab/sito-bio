@@ -6,18 +6,29 @@
     <title>Federico | Bio</title>
     <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
     <style>
-        body { font-family: sans-serif; max-width: 600px; margin: 40px auto; padding: 20px; line-height: 1.6; background: #f4f4f4; }
-        section { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        body { font-family: sans-serif; max-width: 800px; margin: 40px auto; padding: 20px; line-height: 1.6; background: #f4f4f4; color: #333; }
+        section { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        .annuncio { border-left: 4px solid #007bff; padding-left: 15px; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid #eee; }
+        .annuncio h4 { margin: 0; color: #007bff; }
+        .annuncio small { color: #888; }
         form { display: flex; flex-direction: column; gap: 10px; }
         input, textarea, button { padding: 10px; border: 1px solid #ddd; border-radius: 4px; }
-        button { background: #007bff; color: white; cursor: pointer; border: none; }
+        button { background: #007bff; color: white; cursor: pointer; border: none; font-weight: bold; }
+        button:hover { background: #0056b3; }
     </style>
 </head>
 <body>
     <section>
-        <h1>Barbagallo Stefania</h1>
-        <p>Psicologa e Psicoterapeuta</p>
-        <hr>
+        <h1>Federico</h1>
+        <p>Sistemista IT | Benvenuti nel mio spazio bacheca.</p>
+    </section>
+
+    <section>
+        <h2>Bacheca Annunci</h2>
+        <div id="bacheca">Caricamento annunci...</div>
+    </section>
+
+    <section>
         <h3>Contattami</h3>
         <form name="contatti" method="POST" data-netlify="true">
             <input type="email" name="email" placeholder="La tua email" required>
@@ -25,16 +36,37 @@
             <button type="submit">Invia Richiesta</button>
         </form>
     </section>
+
     <script>
-      if (window.netlifyIdentity) {
-        window.netlifyIdentity.on("init", user => {
-          if (!user) {
-            window.netlifyIdentity.on("login", () => {
-              document.location.href = "/admin/";
+        // Script per caricare gli annunci dal file JSON generato dal CMS
+        fetch('/content/bacheca.json')
+            .then(response => response.json())
+            .then(data => {
+                const container = document.getElementById('bacheca');
+                if (!data.annunci || data.annunci.length === 0) {
+                    container.innerHTML = "<p>Nessun annuncio presente.</p>";
+                    return;
+                }
+                container.innerHTML = data.annunci.map(a => `
+                    <div class="annuncio">
+                        <h4>${a.title}</h4>
+                        <small>${new Date(a.date).toLocaleDateString('it-IT')}</small>
+                        <p>${a.body}</p>
+                    </div>
+                `).join('');
+            })
+            .catch(() => {
+                document.getElementById('bacheca').innerHTML = "<p>Inizia a pubblicare dalla tua area /admin</p>";
             });
-          }
-        });
-      }
+
+        // Widget Identity
+        if (window.netlifyIdentity) {
+            window.netlifyIdentity.on("init", user => {
+                if (!user) {
+                    window.netlifyIdentity.on("login", () => { document.location.href = "/admin/"; });
+                }
+            });
+        }
     </script>
 </body>
 </html>
