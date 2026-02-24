@@ -50,15 +50,14 @@
 
     <section id="contatti">
         <h2>Contattami</h2>
-        <form action="https://contattipsi.barbagallopsicologa.workers.dev/">
+        <form action="https://contattipsi.barbagallopsicologa.workers.dev/" method="POST">
             <input type="text" name="nome" placeholder="Il tuo nome" required>
             <input type="email" name="email" placeholder="La tua email" required>
             <select name="motivo">
                 <option value="appuntamento">Richiesta appuntamento</option>
                 <option value="info">Informazioni generali</option>
-                <option value="altro">Altro</option>
             </select>
-            <textarea name="messaggio" rows="5" placeholder="Come posso aiutarti?" required></textarea>
+            <textarea name="messaggio" placeholder="Come posso aiutarti?" required></textarea>
             <button type="submit">Invia Messaggio</button>
         </form>
     </section>
